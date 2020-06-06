@@ -1,9 +1,10 @@
+// iPhone/iOSアプリの各アイコンサイズのリサイズするプログラム
+
 package main
 
 import (
 	"flag"
 	"fmt"
-	"image/jpeg"
 	"image/png"
 	"log"
 	"os"
@@ -25,19 +26,19 @@ func main() {
 		fmt.Println("Need to use an optional: -file")
 		return
 	}
-
+	// 指定したファイルを開く
 	file, err := os.Open(filePath)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-
+	// png形式にデコード
 	img, err := png.Decode(file)
 	if err != nil {
 		log.Fatal(err)
 	}
 	file.Close()
-
+	// 各サイズにリサイズ
 	for index, size := range iconSizes {
 		m := resize.Resize(size, size, img, resize.NearestNeighbor)
 		out, err := os.Create("test_" + iconTitles[index] + ".png")
@@ -45,7 +46,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer out.Close()
-
-		jpeg.Encode(out, m, nil)
+		// png形式にエンコード
+		png.Encode(out, m)
 	}
 }
