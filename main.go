@@ -14,7 +14,6 @@ import (
 
 // iOSアプリに必要なアイコンのサイズ
 var iconSizes [13]uint = [13]uint{20, 29, 40, 58, 60, 76, 80, 87, 120, 152, 167, 180, 1024}
-var iconTitles [13]string = [13]string{"20", "29", "40", "58", "60", "76", "80", "87", "120", "152", "167", "180", "1024"}
 
 func main() {
 	f := flag.String("file", "", "File Path")
@@ -39,14 +38,16 @@ func main() {
 	}
 	file.Close()
 	// 各サイズにリサイズ
-	for index, size := range iconSizes {
+	for _, size := range iconSizes {
 		m := resize.Resize(size, size, img, resize.NearestNeighbor)
-		out, err := os.Create("test_" + iconTitles[index] + ".png")
+		outputName := fmt.Sprintf("test_%d.png", size)
+		out, err := os.Create(outputName)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer out.Close()
 		// png形式にエンコード
 		png.Encode(out, m)
+		fmt.Printf("Decoding image for %d is completed.\n", size)
 	}
 }
